@@ -1,10 +1,13 @@
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
+#include "IUpdateDrawSystem.h"
 #include "ParticleSystem.h"
+#include <memory>
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace zlx;
 
 class CinderSandboxApp : public AppNative {
 public:
@@ -15,12 +18,14 @@ public:
     double sinTick(double rate);
 
 private:
-    zlx::ParticleController particle_controller;
+	vector<shared_ptr<zlx::IUpdateDrawSystem>> systems;
 };
 
 void CinderSandboxApp::setup()
 {
-    particle_controller.generate(10000);
+	systems.push_back(make_shared<zlx::ParticleController>());
+
+	dynamic_cast<ParticleController*>(systems[0].get())->generate(50);
 }
 
 void CinderSandboxApp::mouseDown(MouseEvent event)
@@ -34,7 +39,8 @@ double CinderSandboxApp::sinTick(double rate = 1.0)
 
 void CinderSandboxApp::update()
 {
-    particle_controller.update();
+	for (auto& pSys : systems)
+		pSys->update();
 }
 
 void CinderSandboxApp::draw()
@@ -45,7 +51,8 @@ void CinderSandboxApp::draw()
 
     gl::clear(Color(r, g, b));
 
-    particle_controller.draw();
+	for (auto& pSys : systems)
+		pSys->draw();
 }
 
 CINDER_APP_NATIVE(CinderSandboxApp, RendererGl)
