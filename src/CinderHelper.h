@@ -6,15 +6,27 @@
 
 namespace zlx
 {
-    vec2 randVec2()
+    //return a point between (0, 0) and (1, 1)
+    Point2 randPoint2()
     {
-        return vec2(ci::randVec2f()) * 0.5 + 0.5;
+        Point2 rand = ci::randVec2f();
+
+        return rand * 0.5f + 0.5f;
     }
 
-    vec2 to_screen_coordinates(vec2 relative_position, float radius)
+    Vec2 randVec2()
     {
-        vec2 w = ci::app::getWindowSize();
+        Vec2 rand = ci::randVec2f();
 
-        return (w - 2 * radius) * relative_position + radius;
+        return rand * 0.5f + 0.5f;
+    }
+
+    Point2 to_screen_coordinates(Point2 relative_position, float radius)
+    {
+        Point2 w = ci::app::getWindowSize();
+
+        Point2 result =  (w - 2 * radius) * relative_position + radius;
+
+        return result;
     }
 }

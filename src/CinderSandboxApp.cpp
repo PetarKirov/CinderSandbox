@@ -1,8 +1,8 @@
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
-#include "IUpdateDrawSystem.h"
+#include "UpdateDrawSystem.h"
 #include "ParticleSystem.h"
-#include <memory>
+#include "STDExtensions.h" //for make_unique
 
 using namespace ci;
 using namespace ci::app;
@@ -18,14 +18,14 @@ public:
     double sinTick(double rate);
 
 private:
-	vector<shared_ptr<zlx::IUpdateDrawSystem>> systems;
+	vector<unique_ptr<zlx::UpdateDrawSystem>> systems;
 };
 
 void CinderSandboxApp::setup()
 {
-	systems.push_back(make_shared<zlx::ParticleController>());
-
-	dynamic_cast<ParticleController*>(systems[0].get())->generate(50);
+    auto pc = std::ext::make_unique<ParticleController>();
+    pc->generate(50);
+    systems.push_back(std::move(pc));
 }
 
 void CinderSandboxApp::mouseDown(MouseEvent event)
@@ -45,9 +45,9 @@ void CinderSandboxApp::update()
 
 void CinderSandboxApp::draw()
 {
-    float r = sinTick(0.25);
-    float g = sinTick(0.75);
-    float b = sinTick(0.5);
+    float r = (float)sinTick(0.25);
+    float g = (float)sinTick(0.75);
+    float b = (float)sinTick(0.5);
 
     gl::clear(Color(r, g, b));
 

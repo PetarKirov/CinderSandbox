@@ -5,7 +5,7 @@
 #include <string>
 #include "cinder/gl/gl.h"
 #include "CinderHelper.h"
-#include "IUpdateDrawSystem.h"
+#include "UpdateDrawSystem.h"
 
 namespace zlx
 {
@@ -15,21 +15,24 @@ namespace zlx
         Particle(const Particle& other)
             : location(other.location), velocity(other.velocity), radius(other.radius) { }
 
-        Particle(vec2 location_, vec2 velocity_, float radius_)
+        Particle(Point2 location_, Vec2 velocity_, float radius_)
             : location(location_), velocity(velocity_), radius(radius_) { }
 
-        void update() { location += velocity; }
+        void update() 
+        { 
+            location += velocity;
+        }
 
         void draw() 
         { 
             ci::gl::drawSolidCircle(
-                to_screen_coordinates(location, radius), 
+                to_screen_coordinates(location, radius),
                 radius,
 				4); 
         }
 
-        vec2 location; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
-        vec2 velocity; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
+        Point2 location; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
+        Vec2 velocity; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
         float radius;  //in pixels
     };
 
@@ -41,7 +44,7 @@ namespace zlx
 	}
 
 
-	class ParticleController : public IUpdateDrawSystem
+	class ParticleController : public UpdateDrawSystem
     {
     public:
         void update()
@@ -50,10 +53,10 @@ namespace zlx
             {
                 p.update();
 
-                if (p.location[0] <= 0.0 || p.location[0] >= 1.0)
+                if (p.location.x <= 0.0 || p.location.x >= 1.0)
                     p.velocity.negate_x();
 
-                if (p.location[1] <= 0.0 || p.location[1] >= 1.0)
+                if (p.location.y <= 0.0 || p.location.y >= 1.0)
                     p.velocity.negate_y();
             }
         }
@@ -69,20 +72,20 @@ namespace zlx
         {
             using namespace ci;
 
-			const float speedFactor = 0.01;
+			const float speedFactor = 0.01f;
 
             for (size_t i = 0; i < n; i++)
             {
-				int size = ci::randInt(3, 12);
+				float size = (float)ci::randInt(3, 12);
 
-				vec2 direction = randVec2().normalize();
-				vec2 velocity = direction * (speedFactor / (size * 2));
+				Vec2 direction = randVec2().normalize();
+				Vec2 velocity = direction * (speedFactor / (size * 2));
 
-				particles.push_back(Particle(randVec2(), velocity, size));
+				particles.push_back(Particle(randPoint2(), velocity, size));
             }
         }
 
-    //private:
+    private:
         std::vector<Particle> particles;
     };
 
