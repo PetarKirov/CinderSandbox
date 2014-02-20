@@ -115,12 +115,13 @@ namespace zlx
     class Vec2 : public vec2
     {
     public:
+        Vec2(float x_, float y_) : vec2(x_, y_) { }
         Vec2(const vec2& v) : vec2(v) { }
-        Vec2(ci::Vec2f ci_v) : vec2(ci_v) { }
-        Vec2(ci::Vec2i ci_v) : vec2(ci_v) { }
+        Vec2(ci::Vec2f ci_vf) : vec2(ci_vf) { }
+        Vec2(ci::Vec2i ci_vi) : vec2(ci_vi) { }
 
-        Vec2 operator*(float f) { return vec2::operator*(f); }
-        Vec2 operator+(float f) { return vec2::operator+(f); }
+        Vec2 operator*(float f) const { return vec2::operator*(f); }
+        Vec2 operator+(float f) const { return vec2::operator+(f); }
     };
 
     inline std::ostream& operator<<(std::ostream& o, const Vec2& v)
@@ -135,8 +136,8 @@ namespace zlx
         Point2(float x, float y) : vec2(x, y) { }
         Point2(const vec2& v) : vec2(v) { }
 
-        Point2(cinder::Vec2i v) : vec2(v) { }
-        Point2(cinder::Vec2f v) : vec2(v) { }
+        Point2(const cinder::Vec2i ci_vi&) : vec2(ci_vi) { }
+        Point2(const cinder::Vec2f ci_vf&) : vec2(ci_vf) { }
 
         operator ci::Vec2f() { return ci::Vec2f(x, y); }
         operator ci::Vec2i() { return ci::Vec2i((int)x, (int)y); }
@@ -185,20 +186,37 @@ namespace zlx
     class Box2
     {
     public:
-        Box2(const Point2& p1, const Point2& p2);
+        Box2(const Point2& p1, const Point2& p2)
+            : top_left(p1), bottom_right(p2) { }
 
-        Box2 operator+(const Vec2& v); //displace the box by vector v
-        Box2 operator-(const Vec2& v); //displace the box by vector -v
+        explicit Box2(const ci::Vec2i ci_vf&) : top_left(0.0, 0.0), bottom_right(ci_vf) { }
+        explicit Box2(const ci::Vec2f ci_vi&) : top_left(0.0, 0.0), bottom_right(ci_vi) { }
 
-        Box2 operator*(float f); //uniform scale
-        Box2 operator/(float f); //uniform scale
+        Box2(const ci::Rectf ci_rect&) 
+            : top_left(ci_rect.getUpperLeft()), 
+            bottom_right(ci_rect.getLowerRight()) { }
 
-        Box2 operator*(const Vec2& v); //2D scale
+        operator ci::Rectf()
+        {
+            return ci::Rectf(top_left, bottom_right);
+        }
+
+        Box2 operator+(const Vec2& v) const; //displace the box by vector v
+        Box2 operator-(const Vec2& v) const; //displace the box by vector -v
+
+        Box2 operator*(float f) const; //uniform scale
+        Box2 operator/(float f) const; //uniform scale
+
+        Box2 operator*(const Vec2& v) const //2D scale
+        {
+            return Box2(top_left * v, bottom_right * v);
+        }
+
         Box2 operator/(const Vec2& v); //2D scale
 
         Size2 size()
         {
-            Vec2 diff = top_left - (bottom_right);
+            Vec2 diff = top_left - bottom_right;
 
             return Size2(diff.x, diff.y);
         }

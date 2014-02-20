@@ -1,6 +1,6 @@
 #pragma once;
 
-#include "cinder/app/App.h"
+#include "cinder/Color.h"
 #include "cinder/Rand.h"
 #include "Vec2.h"
 
@@ -29,4 +29,16 @@ namespace zlx
 
         return result;
     }
+
+
+    ci::Color randColor()
+    {
+        ci::Color c = ci::Color(
+            ci::randFloat(),
+            ci::randFloat(),
+            ci::randFloat());
+
+        return c;
+    }
+
 }

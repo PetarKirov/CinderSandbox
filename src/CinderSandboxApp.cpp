@@ -3,56 +3,97 @@
 #include "UpdateDrawSystem.h"
 #include "ParticleSystem.h"
 #include "STDExtensions.h" //for make_unique
+#include <functional>
 
-using namespace ci;
-using namespace ci::app;
 using namespace std;
-using namespace zlx;
 
-class CinderSandboxApp : public AppNative {
+typedef function<void()> Action;
+struct TimedAction
+{
+    TimedAction(Action a, double i) : action(a), interval(i) { }
+    Action action;
+    double intervalInMsec;
+};
+
+class CinderSandboxApp : public ci::app::AppNative {
 public:
     void setup();
-    void mouseDown(MouseEvent event);
+    void mouseDown(ci::app::MouseEvent event);
     void update();
     void draw();
-    double sinTick(double rate);
-
 private:
-	vector<unique_ptr<zlx::UpdateDrawSystem>> systems;
+    ci::Color backgroundColor;
+    uint64_t counter;
+
+    vector<unique_ptr<zlx::UpdateDrawSystem>> systems;
+    vector<TimedAction> updateActions;
+
+    double sinTick(double rate = 1.0)
+    {
+        return sin(getElapsedSeconds() * rate) * 0.5 + 0.5;
+    }
+
+    ci::Color sinColor()
+    {
+        return ci::Color((float)sinTick(0.25),
+                         (float)sinTick(0.75),
+                         (float)sinTick(0.5));
+    }
+
+    void addTimedAction(function<void()> action, double duration)
+    {
+        updateActions.push_back(TimedAction(action, duration));
+    }
+
+    void executeTimedActions();
 };
 
 void CinderSandboxApp::setup()
 {
-    auto pc = std::ext::make_unique<ParticleController>();
+    using namespace std::ext;
+    using namespace zlx;
+    using namespace zlx::ui;
+
+    counter = 0;
+
+    auto pc = make_unique<ParticleController>();
     pc->generate(50);
     systems.push_back(std::move(pc));
+
+    addTimedAction([this] { backgroundColor = this->sinColor(); }, 1.0 / 60);
 }
 
-void CinderSandboxApp::mouseDown(MouseEvent event)
+void CinderSandboxApp::mouseDown(ci::app::MouseEvent event)
 {
 }
 
-double CinderSandboxApp::sinTick(double rate = 1.0)
+void CinderSandboxApp::executeTimedActions()
 {
-    return sin(getElapsedSeconds() * rate) * 0.5 + 0.5;
+    double time = ci::app::getElapsedSeconds();
+    double delta = 1.0 / ci::app::getFrameRate(); //precision of ~one frame
+
+    for (auto& a : updateActions)
+    {
+        double c = fmod(time, a.interval);
+        if (c < delta)
+            a.action();
+    }
 }
 
 void CinderSandboxApp::update()
 {
-	for (auto& pSys : systems)
-		pSys->update();
+    executeTimedActions();
+
+    for (auto& pSys : systems)
+        pSys->update();
 }
 
 void CinderSandboxApp::draw()
 {
-    float r = (float)sinTick(0.25);
-    float g = (float)sinTick(0.75);
-    float b = (float)sinTick(0.5);
+    ci::gl::clear(backgroundColor);
 
-    gl::clear(Color(r, g, b));
-
-	for (auto& pSys : systems)
-		pSys->draw();
+    for (auto& pSys : systems)
+        pSys->draw();
 }
 
-CINDER_APP_NATIVE(CinderSandboxApp, RendererGl)
+CINDER_APP_NATIVE(CinderSandboxApp, ci::app::RendererGl)
