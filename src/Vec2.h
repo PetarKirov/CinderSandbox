@@ -117,8 +117,8 @@ namespace zlx
     public:
         Vec2(float x_, float y_) : vec2(x_, y_) { }
         Vec2(const vec2& v) : vec2(v) { }
-        Vec2(ci::Vec2f ci_vf) : vec2(ci_vf) { }
-        Vec2(ci::Vec2i ci_vi) : vec2(ci_vi) { }
+        Vec2(const ci::Vec2f& ci_vf) : vec2(ci_vf) { }
+        Vec2(const ci::Vec2i& ci_vi) : vec2(ci_vi) { }
 
         Vec2 operator*(float f) const { return vec2::operator*(f); }
         Vec2 operator+(float f) const { return vec2::operator+(f); }
@@ -136,8 +136,8 @@ namespace zlx
         Point2(float x, float y) : vec2(x, y) { }
         Point2(const vec2& v) : vec2(v) { }
 
-        Point2(const cinder::Vec2i ci_vi&) : vec2(ci_vi) { }
-        Point2(const cinder::Vec2f ci_vf&) : vec2(ci_vf) { }
+        Point2(const cinder::Vec2i& ci_vi) : vec2(ci_vi) { }
+        Point2(const cinder::Vec2f& ci_vf) : vec2(ci_vf) { }
 
         operator ci::Vec2f() { return ci::Vec2f(x, y); }
         operator ci::Vec2i() { return ci::Vec2i((int)x, (int)y); }
@@ -189,10 +189,10 @@ namespace zlx
         Box2(const Point2& p1, const Point2& p2)
             : top_left(p1), bottom_right(p2) { }
 
-        explicit Box2(const ci::Vec2i ci_vf&) : top_left(0.0, 0.0), bottom_right(ci_vf) { }
-        explicit Box2(const ci::Vec2f ci_vi&) : top_left(0.0, 0.0), bottom_right(ci_vi) { }
+        explicit Box2(const ci::Vec2i& ci_vf) : top_left(0.0, 0.0), bottom_right(ci_vf) { }
+        explicit Box2(const ci::Vec2f& ci_vi) : top_left(0.0, 0.0), bottom_right(ci_vi) { }
 
-        Box2(const ci::Rectf ci_rect&) 
+        Box2(const ci::Rectf& ci_rect)
             : top_left(ci_rect.getUpperLeft()), 
             bottom_right(ci_rect.getLowerRight()) { }
 

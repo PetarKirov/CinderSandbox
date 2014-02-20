@@ -12,7 +12,7 @@ struct TimedAction
 {
     TimedAction(Action a, double i) : action(a), interval(i) { }
     Action action;
-    double intervalInMsec;
+    double interval; //in miliseconds
 };
 
 class CinderSandboxApp : public ci::app::AppNative {
@@ -52,7 +52,6 @@ void CinderSandboxApp::setup()
 {
     using namespace std::ext;
     using namespace zlx;
-    using namespace zlx::ui;
 
     counter = 0;
 
@@ -82,6 +81,7 @@ void CinderSandboxApp::executeTimedActions()
 
 void CinderSandboxApp::update()
 {
+    counter++;
     executeTimedActions();
 
     for (auto& pSys : systems)
