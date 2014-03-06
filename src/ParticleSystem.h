@@ -18,19 +18,9 @@ namespace zlx
         Particle(Point2 location_, Vec2 velocity_, float radius_, ci::Color color_ = ci::Color(1, 1, 1))
             : location(location_), velocity(velocity_), radius(radius_), color(color_) { }
 
-        void update() 
-        { 
-            location += velocity;
-        }
+        void update();
 
-        void draw() 
-        { 
-            ci::gl::color(color);
-            ci::gl::drawSolidCircle(
-                to_screen_coordinates(location, radius),
-                radius,
-				4); 
-        }
+        void draw();
 
         Point2 location; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
         Vec2 velocity; //relative, from (0, 0) to (1, 1), where zero is the top-left corner, and one - the bottom-right
@@ -38,54 +28,17 @@ namespace zlx
         ci::Color color;
     };
 
-	inline std::ostream& operator<<(std::ostream& o, const Particle& p)
-	{
-		o << "location: " << p.location << " velocity: " << p.velocity << " radius: " << p.radius;
-
-		return o;
-	}
-
+    inline std::ostream& operator<<(std::ostream& o, const Particle& p);
 
 	class ParticleController : public UpdateDrawSystem
     {
     public:
-        void update()
-        {
-            for (auto& p : particles)
-            {
-                p.update();
+        void update();
 
-                if (p.location.x <= 0.0 || p.location.x >= 1.0)
-                    p.velocity.negate_x();
-
-                if (p.location.y <= 0.0 || p.location.y >= 1.0)
-                    p.velocity.negate_y();
-            }
-        }
-
-        void draw() 
-        {
-            for (auto& x : particles) 
-                x.draw(); 
-        }
+        void draw();
 
         //Create @n particles with random location and velocity
-        void generate(size_t n)
-        {
-            using namespace ci;
-
-			const float speedFactor = 0.01f;
-
-            for (size_t i = 0; i < n; i++)
-            {
-				float size = (float)ci::randInt(3, 12);
-
-				Vec2 direction = randVec2().normalize();
-				Vec2 velocity = direction * (speedFactor / (size * 2));
-
-                particles.push_back(Particle(randPoint2(), velocity, size, ci::Color(1, 1, 1)));
-            }
-        }
+        void generate(size_t n);
 
     private:
         std::vector<Particle> particles;

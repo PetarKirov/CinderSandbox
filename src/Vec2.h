@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include "cinder/Vector.h"
+#include "cinder/Rect.h"
 
 namespace zlx
 {
@@ -192,6 +193,8 @@ namespace zlx
         explicit Box2(const ci::Vec2i& ci_vf) : top_left(0.0, 0.0), bottom_right(ci_vf) { }
         explicit Box2(const ci::Vec2f& ci_vi) : top_left(0.0, 0.0), bottom_right(ci_vi) { }
 
+        explicit Box2(const Size2& s) : top_left(0.0, 0.0), bottom_right(s.width(), s.height()) { }
+
         Box2(const ci::Rectf& ci_rect)
             : top_left(ci_rect.getUpperLeft()), 
             bottom_right(ci_rect.getLowerRight()) { }
@@ -219,6 +222,14 @@ namespace zlx
             Vec2 diff = top_left - bottom_right;
 
             return Size2(diff.x, diff.y);
+        }
+
+        Point2 relative_position(const Point2& p)
+        {
+            auto s = size();
+
+            return Point2(p.x * s.width(),
+                          p.y * s.height());
         }
 
     private:
