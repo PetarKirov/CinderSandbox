@@ -1,6 +1,6 @@
 #pragma once;
 
-#include "Vec2.h"
+#include "..\..\Vec2.h"
 
 #include <algorithm>
 #include <numeric>
@@ -103,10 +103,10 @@ namespace zlx
 
                     for (const auto& item : data_source)
                     {
-                        float x = dx != 0.0 ? (item.x - stats.min_x) / dx : dx;
-                        float y = dy != 0.0 ? (item.y - stats.min_y) / dy : dy;
+                        double x = dx != 0.0 ? (item.x - stats.min_x) / dx : dx;
+                        double y = dy != 0.0 ? (item.y - stats.min_y) / dy : dy;
 
-                        Point2 data_point(x, y);
+                        Point2 data_point((float)x, (float)y);
 
                         data_points.push_back(data_point);
                     }

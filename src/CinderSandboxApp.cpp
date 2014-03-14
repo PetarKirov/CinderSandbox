@@ -1,10 +1,12 @@
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Text.h"
+#include "cinder/gl/Texture.h"
 #include "UpdateDrawSystem.h"
 #include "ParticleSystem.h"
 #include "STDExtensions.h" //for make_unique
-#include "LayoutSystem.h"
-#include "Chart.h"
+#include "ui/LayoutSystem.h"
+#include "ui/Chart.h"
 #include <functional>
 
 using namespace std;
@@ -99,10 +101,10 @@ void CinderSandboxApp::update()
     for (auto& pSys : systems)
         pSys->update();
 
-    if (data->get_data_source().size() > 100)
+    if (data->get_data_source().size() > 100000)
         data->get_data_source().erase(data->get_data_source().begin());
 
-    data->get_data_source().emplace_back(ci::app::getElapsedSeconds(),
+    data->get_data_source().emplace_back((float)ci::app::getElapsedSeconds(),
                                          ci::randFloat(30, 60));
 }
 
@@ -112,6 +114,8 @@ void CinderSandboxApp::draw()
 
     for (auto& pSys : systems)
         pSys->draw();
+
+    using namespace ci;
 }
 
 CINDER_APP_NATIVE(CinderSandboxApp, ci::app::RendererGl)

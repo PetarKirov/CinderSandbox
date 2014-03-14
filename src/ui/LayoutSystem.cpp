@@ -1,5 +1,5 @@
 #include "LayoutSystem.h"
-#include "Vec2.h"
+#include "..\Vec2.h"
 
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"

@@ -1,7 +1,7 @@
 #include "Chart.h"
 
 #include "cinder/gl/gl.h"
-#include "CinderHelper.h"
+#include "..\CinderHelper.h"
 
 namespace zlx
 {

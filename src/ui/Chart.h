@@ -1,7 +1,7 @@
 #pragma once;
 
 #include "UIElement.h"
-#include "ItemsSource.h"
+#include "charting/ItemsSource.h"
 
 #include <memory>
 
@@ -12,8 +12,10 @@ namespace zlx
         class Chart : public UIElement
         {
         public:
-            explicit Chart(Box2 bounding_box_) : UIElement(bounding_box_) { }            
+            explicit Chart(Box2 bounding_box_) : UIElement(bounding_box_) { }
+            ~Chart() { }
 
+            //From UIElement:
             Size2 measure(const Size2& available_size) override;
 
             Size2 arrange(const Size2& available_size) override;
@@ -24,6 +26,10 @@ namespace zlx
             {
                 return 1;
             }
+
+            //Chart-specific:
+
+
 
             std::shared_ptr<charting::ItemsSourceBase> items_source;
         };

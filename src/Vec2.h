@@ -16,6 +16,8 @@ namespace zlx
             struct { float x, y; };
         };
 
+        vec2() : x(0.0f), y(0.0f) { }
+
         vec2(float x_, float y_) : x(x_), y(y_) { }
 
         vec2(const vec2& other) : x(other.x), y(other.y) { }
@@ -134,6 +136,8 @@ namespace zlx
     class Point2 : public vec2
     {
     public:
+        Point2() : vec2() { }
+
         Point2(float x, float y) : vec2(x, y) { }
         Point2(const vec2& v) : vec2(v) { }
 
@@ -187,6 +191,8 @@ namespace zlx
     class Box2
     {
     public:
+        Box2() : top_left(), bottom_right() { }
+
         Box2(const Point2& p1, const Point2& p2)
             : top_left(p1), bottom_right(p2) { }
 
@@ -231,6 +237,9 @@ namespace zlx
             return Point2(p.x * s.width(),
                           p.y * s.height());
         }
+
+        Point2 top_left_point() { return top_left; }
+        Point2 bottom_right_point() { return bottom_right; }
 
     private:
         Point2 top_left;
