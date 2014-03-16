@@ -6,14 +6,14 @@ namespace zlx
 {
     namespace ui
     {
-        struct GridColumn
+        struct GridColumnsDefinition
         {
-
+			//Should use initializer_list<int>
         };
 
-        struct GridRow
+        struct GridRowsDefinition
         {
-
+			//Should use initializer_list<int>
         };
 
         class GridPanel
